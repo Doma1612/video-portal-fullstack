@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-videoportal}
+      POSTGRES_USER: ${POSTGRES_USER:-videoportal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-videoportal}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U videoportal -d videoportal"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./video-portal-backend-spring
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-videoportal}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-videoportal}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-videoportal}
+      APP_FFMPEG_PATH: ffmpeg
+      APP_STORAGE_INITIAL_UPLOAD_DIR: /data/initial_upload
+      APP_STORAGE_CONVERTED_DIR: /data/converted
+      # Optional: seed an admin account on startup (role=1)
+      APP_ADMIN_ENABLED: ${APP_ADMIN_ENABLED:-false}
+      APP_ADMIN_USERNAME: ${APP_ADMIN_USERNAME:-}
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:-}
+      APP_ADMIN_ROLE: ${APP_ADMIN_ROLE:-1}
+    volumes:
+      - video_data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./video-portal-frontend-main
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  video_data:
