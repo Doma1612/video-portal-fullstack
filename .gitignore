@@ -1,0 +1,61 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+!.vscode/launch.json
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Env files (never commit real secrets)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Java / Maven / Gradle
+**/target/
+**/.classpath
+**/.project
+**/.settings/
+**/.factorypath
+**/.springBeans
+**/.metadata/
+
+# Node / Svelte / Vite
+**/node_modules/
+**/.svelte-kit/
+**/build/
+**/dist/
+**/.vite/
+**/.eslintcache
+
+# Runtime data / databases / uploads
+video-portal-backend-spring/data/
+**/data/db/
+**/data/initial_upload/
+**/data/converted/
+
+# Sample/large data (keep the repo light; use LFS if needed)
+data/
+
+# Common media outputs
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.mp3
+*.wav
+*.flac
+*.m4a
+*.zip
+*.tar
+*.tar.gz
+*.tgz
