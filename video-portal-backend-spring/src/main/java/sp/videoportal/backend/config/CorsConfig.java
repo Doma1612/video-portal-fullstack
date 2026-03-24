@@ -1,0 +1,43 @@
+package sp.videoportal.backend.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class CorsConfig {
+
+    private final Environment environment;
+
+    public CorsConfig(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                String[] allowedOrigins = environment.getProperty(
+                        "app.cors.allowed-origins",
+                        String[].class,
+                        new String[] {
+                            "http://localhost:3000",
+                            "http://127.0.0.1:3000",
+                            "http://localhost:5173",
+                            "http://127.0.0.1:5173"
+                        }
+                );
+
+                registry.addMapping("/**")
+                        .allowedOrigins(allowedOrigins)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true)
+                        .maxAge(3600);
+            }
+        };
+    }
+}

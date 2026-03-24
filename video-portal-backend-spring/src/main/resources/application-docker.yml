@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  h2:
+    console:
+      enabled: false
+
+app:
+  ffmpeg:
+    path: ffmpeg
+  storage:
+    initial-upload-dir: /data/initial_upload
+    converted-dir: /data/converted
